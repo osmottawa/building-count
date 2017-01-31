@@ -12,7 +12,8 @@ $ gzip -d canada.mbtiles.gz
 ## Quickstart
 
 ```bash
-node index.js
+npm install
+npm start
 ```
 
 ## Results
