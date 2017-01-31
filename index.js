@@ -1,8 +1,9 @@
 const tileReduce = require('tile-reduce')
 const path = require('path')
 const turf = require('@turf/turf')
+const fs = require('fs')
 
-const city = 'Ottawa'
+const city = 'Gatineau'
 const days = 60
 const collection = turf.featureCollection([])
 const users = {}
@@ -34,4 +35,5 @@ tileReduce({
   console.log('Users:')
   const sorted = Object.keys(users).sort((a, b) => users[a] - users[b]).reverse()
   sorted.map(user => console.log(`- [${users[user]}] ${user}`))
+  fs.writeFileSync('results.geojson', JSON.stringify(collection, null, 2))
 })
