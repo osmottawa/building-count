@@ -8,8 +8,12 @@ const days = 60
 const collection = turf.featureCollection([])
 const users = {}
 
+function read (filename) {
+  return JSON.parse(fs.readFileSync(filename, 'utf8'))
+}
+
 tileReduce({
-  geojson: require(`./extents/${city}.json`),
+  geojson: read(`./extents/${city}.geojson`),
   zoom: 12,
   map: path.join(__dirname, 'building.js'),
   sources: [{name: 'qatiles', mbtiles: 'canada.mbtiles'}],
