@@ -24,6 +24,8 @@ tileReduce({
   })
 })
 .on('end', () => {
+  console.log('Extent: Gatineau')
+  console.log('Past days: 60')
   console.log('Buildings total: %d', collection.features.length)
   console.log('Users:')
   const sorted = Object.keys(users).sort((a, b) => users[a] - users[b]).reverse()
