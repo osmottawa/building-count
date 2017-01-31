@@ -2,15 +2,19 @@ const tileReduce = require('tile-reduce')
 const path = require('path')
 const turf = require('@turf/turf')
 
-const ottawa = require('./extents/gatineau.json')
+const city = 'Ottawa'
+const days = 60
 const collection = turf.featureCollection([])
 const users = {}
 
 tileReduce({
-  geojson: ottawa,
+  geojson: require(`./extents/${city}.json`),
   zoom: 12,
   map: path.join(__dirname, 'building.js'),
-  sources: [{name: 'qatiles', mbtiles: 'canada.mbtiles'}]
+  sources: [{name: 'qatiles', mbtiles: 'canada.mbtiles'}],
+  mapOptions: {
+    days
+  }
 })
 .on('reduce', (features) => {
   features.map(feature => {
@@ -24,7 +28,7 @@ tileReduce({
   })
 })
 .on('end', () => {
-  console.log('Extent: Gatineau')
+  console.log('Extent: ' + city)
   console.log('Past days: 60')
   console.log('Buildings total: %d', collection.features.length)
   console.log('Users:')

@@ -1,4 +1,4 @@
-const days = 60
+const days = global.mapOptions.days
 module.exports = (data, tile, writeData, done) => {
   const features = []
   for (const feature of data.qatiles.osm.features) {
