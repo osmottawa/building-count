@@ -18,6 +18,8 @@
   "homepage": "https://github.com/osmottawa/building-count#readme",
   "dependencies": {
     "@turf/turf": "^3.8.0",
-    "tile-reduce": "^3.1.1"
+    "load-json-file": "^2.0.0",
+    "tile-reduce": "^3.1.1",
+    "write-json-file": "^2.0.0"
   }
 }

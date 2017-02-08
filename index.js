@@ -1,43 +1,46 @@
 const tileReduce = require('tile-reduce')
 const path = require('path')
 const turf = require('@turf/turf')
-const fs = require('fs')
+const write = require('write-json-file')
+const load = require('load-json-file')
 
-const city = 'Gatineau'
-const days = 60
-const collection = turf.featureCollection([])
-const users = {}
-
-function read (filename) {
-  return JSON.parse(fs.readFileSync(filename, 'utf8'))
-}
+const city = 'Ottawa'
+const days = 90
+const users = []
+const results = turf.featureCollection([])
+const edits = {}
+const extent = load.sync(`./extents/${city}.geojson`)
 
 tileReduce({
-  geojson: read(`./extents/${city}.geojson`),
+  geojson: extent,
   zoom: 12,
   map: path.join(__dirname, 'building.js'),
   sources: [{name: 'qatiles', mbtiles: 'canada.mbtiles'}],
   mapOptions: {
-    days
+    days,
+    extent,
+    users
   }
 })
 .on('reduce', (features) => {
   features.map(feature => {
-    collection.features.push(feature)
+    results.features.push(feature)
+
+    // Store User information
     const user = feature.properties['@user']
-    if (users[user] === undefined) {
-      users[user] = 1
+    if (edits[user] === undefined) {
+      edits[user] = 1
     } else {
-      users[user] = 1 + users[user]
+      edits[user] = 1 + edits[user]
     }
   })
 })
 .on('end', () => {
   console.log('Extent: ' + city)
   console.log('Past days: 60')
-  console.log('Buildings total: %d', collection.features.length)
+  console.log('Buildings total: %d', results.features.length)
   console.log('Users:')
-  const sorted = Object.keys(users).sort((a, b) => users[a] - users[b]).reverse()
-  sorted.map(user => console.log(`- [${users[user]}] ${user}`))
-  fs.writeFileSync('results.geojson', JSON.stringify(collection, null, 2))
+  const sorted = Object.keys(edits).sort((a, b) => edits[a] - edits[b]).reverse()
+  sorted.map(user => console.log(`- [${edits[user]}] ${user}`))
+  write.sync('results.geojson', results)
 })
